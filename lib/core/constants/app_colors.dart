@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/widgets.dart';
 
 class AppColors {
@@ -29,6 +27,9 @@ class AppColors {
   //Gradients
   static const RadialGradient primaryGradient = RadialGradient(
     colors: [Color(0xFF3F0306), Color(0xFF090909)],
-    center: AlignmentGeometry.bottomCenter,
+    stops: [0.2, 0.60],
+    center: Alignment(0.0, -0.9),
+    radius: 1.25,
+    tileMode: TileMode.clamp,
   );
 }
