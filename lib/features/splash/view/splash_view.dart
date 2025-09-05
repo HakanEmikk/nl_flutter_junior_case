@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/constants/app_text_styles.dart';
+import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -13,6 +16,15 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
+    navigateToLogin();
+  }
+
+  void navigateToLogin() {
+    Timer(Duration(seconds: 3), () {
+      if (mounted) {
+        AppRoutes.pushReplacementNamed(context, AppRoutes.login);
+      }
+    });
   }
 
   @override
