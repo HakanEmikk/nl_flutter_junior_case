@@ -1,5 +1,6 @@
 // lib/core/routes/app_routes.dart
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/features/auth/views/login_view.dart';
 import 'package:jr_case_boilerplate/features/splash/view/splash_view.dart';
 
 class AppRoutes {
@@ -10,8 +11,24 @@ class AppRoutes {
   static const String forgotPassword = '/forgot-password';
 
   static Map<String, WidgetBuilder> get routes => {
-    splash: (context) => SplashView(),
+    splash: (context) => const SplashView(),
   };
+
+  // Route generator (dinamik routes için)
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(
+          builder: (context) => const SplashView(),
+          settings: settings,
+        );
+      case login:
+        return MaterialPageRoute(
+          builder: (context) => const LoginView(),
+          settings: settings,
+        );
+    }
+  }
 
   // Navigasyon helper metodları
   static void pushNamed(BuildContext context, String routeName) {
