@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
-import 'package:jr_case_boilerplate/core/constants/app_text_styles.dart';
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
-    super.key,
     required this.controller,
     required this.hintText,
     required this.prefixIcon,
+    super.key,
     this.keyboardType,
     this.isPassword = false,
     this.suffixIcon,
     this.onSuffixTap,
     this.isPasswordVisible = false,
+    this.validator,
   });
   final TextEditingController? controller;
   final String? hintText;
@@ -22,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
   final IconData? suffixIcon;
   final VoidCallback? onSuffixTap;
   final bool isPasswordVisible;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -36,29 +37,26 @@ class CustomTextFormField extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Bu alan boş bırakılamaz';
-          }
-          return null;
-        },
+        validator: validator,
         keyboardType: keyboardType,
         obscureText: isPassword && isPasswordVisible,
-        style: AppTextStyles.bodyNormalRegular.copyWith(
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
           color: AppColors.baseWhite,
+          fontWeight: FontWeight.w400,
         ),
 
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: AppColors.primary, // %40 beyaz border
               width: 1,
             ),
           ),
           hintText: hintText,
-          hintStyle: AppTextStyles.bodyNormalRegular.copyWith(
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.5),
+            fontWeight: FontWeight.w400,
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 16, right: 12),
@@ -75,7 +73,7 @@ class CustomTextFormField extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 16, left: 12),
                     child: Icon(
                       suffixIcon,
-                      color: AppColors.baseWhite,
+                      color: AppColors.baseWhite.withOpacity(0.3),
                       size: 24,
                     ),
                   ),
