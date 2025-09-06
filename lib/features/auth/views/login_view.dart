@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:lottie/lottie.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
-import 'package:jr_case_boilerplate/core/constants/app_text_styles.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
+class _LoginViewState extends ConsumerState<LoginView>
+    with TickerProviderStateMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = true;
 
   late AnimationController _lottieController;
@@ -53,13 +57,46 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenWidth < 380;
     final isLargeScreen = screenWidth > 600;
-    print(isLargeScreen);
+
+    final authState = ref.watch(authProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      // Sadece gerçekten state değiştiğinde çalış
+      if (previous?.isAuthenticated != next.isAuthenticated ||
+          previous?.error != next.error) {
+        if (next.isAuthenticated) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Giriş başarılı!'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          AppRoutes.pushReplacementNamed(context, AppRoutes.home);
+        } else if (next.error != null && previous?.error != next.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next.error!),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+
+          Future.delayed(const Duration(seconds: 3), () {
+            if (mounted) {
+              ref.read(authProvider.notifier).clearError();
+            }
+          });
+        }
+      }
+    });
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
@@ -70,45 +107,48 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                 minHeight: screenHeight - MediaQuery.of(context).padding.top,
                 maxWidth: isLargeScreen ? 400 : double.infinity,
               ),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: [
-                    // Lottie animasyon + filmler
-                    _buildAnimationSection(isSmallScreen),
+              child: Form(
+                key: _formKey,
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      // Lottie animasyon + filmler
+                      _buildAnimationSection(isSmallScreen),
 
-                    SizedBox(height: screenHeight * 0.03),
+                      SizedBox(height: screenHeight * 0.03),
 
-                    // Ana logo
-                    _buildLogo(isSmallScreen),
+                      // Ana logo
+                      _buildLogo(isSmallScreen),
 
-                    SizedBox(height: screenHeight * 0.0231),
+                      SizedBox(height: screenHeight * 0.0231),
 
-                    // Başlık ve açıklama
-                    _buildHeader(),
+                      // Başlık ve açıklama
+                      _buildHeader(),
 
-                    SizedBox(height: screenHeight * 0.0168),
+                      SizedBox(height: screenHeight * 0.0168),
 
-                    // Form alanları
-                    _buildFormFields(),
+                      // Form alanları
+                      _buildFormFields(),
 
-                    SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                    // Şifremi unuttum
-                    _buildForgotPassword(),
+                      // Şifremi unuttum
+                      _buildForgotPassword(),
 
-                    SizedBox(height: 8),
+                      const SizedBox(height: 8),
 
-                    // Giriş yap butonu
-                    _buildLoginButton(),
+                      // Giriş yap butonu
+                      _buildLoginButton(authState),
 
-                    SizedBox(height: screenHeight * 0.02),
+                      SizedBox(height: screenHeight * 0.02),
 
-                    // Sosyal medya butonları
-                    _buildSocialButtons(isSmallScreen),
-                    SizedBox(height: 12),
-                    // Hesap oluştur
-                    _buildSignUpLink(),
-                  ],
+                      // Sosyal medya butonları
+                      _buildSocialButtons(isSmallScreen),
+                      const SizedBox(height: 8),
+                      // Hesap oluştur
+                      _buildSignUpLink(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -123,9 +163,8 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
       children: [
         Transform.scale(
           scale: 1.5,
-          child: Container(
+          child: SizedBox(
             height: isSmallScreen ? 100 : 150,
-
             child: Lottie.asset(
               'assets/animations/Artboard_1.json',
               controller: _lottieController,
@@ -196,7 +235,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   }
 
   Widget _buildLogo(bool isSmallScreen) {
-    final logoSize = isSmallScreen ? 90.0 : 100.0;
+    final logoSize = isSmallScreen ? 68.0 : 78.0;
 
     return Center(
       child: Image.asset(
@@ -212,14 +251,17 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
       children: [
         Text(
           'Giriş Yap',
-          style: AppTextStyles.heading4.copyWith(color: AppColors.baseWhite),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium!.copyWith(color: AppColors.baseWhite),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           'Kullanıcı bilgilerinle giriş yap',
-          style: AppTextStyles.bodyNormalRegular.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.7),
+            fontWeight: FontWeight.w400,
           ),
           textAlign: TextAlign.center,
         ),
@@ -235,6 +277,15 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
           hintText: 'E-Posta',
           prefixIcon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'E-posta gerekli';
+            }
+            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              return 'Geçerli bir e-posta girin';
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 16),
         CustomTextFormField(
@@ -251,6 +302,15 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
               _isPasswordVisible = !_isPasswordVisible;
             });
           },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Şifre gerekli';
+            }
+            if (value.length < 6) {
+              return 'Şifre en az 6 karakter olmalı';
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -263,28 +323,37 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
         onPressed: () {},
         child: Text(
           'Şifre Unuttum',
-          style: AppTextStyles.bodyNormalSemiBold.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(AuthState authState) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: CustomPrimaryButton(
-        onPressed: () {
-          _handleLogin();
-        },
-        child: Text(
-          'Giriş Yap',
-          style: AppTextStyles.bodyLargeSemiBold.copyWith(
-            color: AppColors.baseWhite,
-          ),
-        ),
+        onPressed: authState.isLoading ? null : _handleLogin,
+        child: authState.isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                'Giriş Yap',
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: AppColors.baseWhite,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
@@ -295,24 +364,32 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SocialMediaButton(
-          assetIcon: 'assets/images/Google.png',
-          backgroundColor: AppColors.baseWhite.withOpacity(0.05),
-          size: buttonSize,
-          onTap: () {},
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SocialMediaButton(
+            assetIcon: 'assets/images/Google.png',
+            backgroundColor: AppColors.baseWhite.withOpacity(0.05),
+            size: buttonSize,
+            onTap: () {},
+          ),
         ),
-        const SizedBox(width: 8),
-        SocialMediaButton(
-          assetIcon: 'assets/images/Apple.png',
-          backgroundColor: AppColors.baseWhite.withOpacity(0.05),
-          onTap: () {},
-          size: buttonSize,
+
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SocialMediaButton(
+            assetIcon: 'assets/images/Apple.png',
+            backgroundColor: AppColors.baseWhite.withOpacity(0.05),
+            onTap: () {},
+            size: buttonSize,
+          ),
         ),
-        const SizedBox(width: 8),
-        SocialMediaButton(
-          assetIcon: 'assets/images/Facebook.png',
-          backgroundColor: AppColors.baseWhite.withOpacity(0.05),
-          size: buttonSize,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SocialMediaButton(
+            assetIcon: 'assets/images/Facebook.png',
+            backgroundColor: AppColors.baseWhite.withOpacity(0.05),
+            size: buttonSize,
+          ),
         ),
       ],
     );
@@ -324,18 +401,20 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
       children: [
         Text(
           'Bir hesabın yok mu? ',
-          style: AppTextStyles.bodyNormalRegular.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.8),
+            fontWeight: FontWeight.w400,
           ),
         ),
         TextButton(
           onPressed: () {
-            // Kayıt ol sayfasına git
+            AppRoutes.pushReplacementNamed(context, AppRoutes.register);
           },
           child: Text(
             'Kayıt Ol',
-            style: AppTextStyles.bodyNormalSemiBold.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: AppColors.baseWhite,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -344,8 +423,12 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   }
 
   void _handleLogin() {
-    print('Email: ${_emailController.text}');
-    print('Password: ${_passwordController.text}');
-    // Ana sayfaya yönlendir
+    if (_formKey.currentState!.validate()) {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+
+      // Auth provider ile login işlemi
+      ref.read(authProvider.notifier).login(email, password);
+    }
   }
 }
