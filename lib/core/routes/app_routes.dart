@@ -1,6 +1,8 @@
 // lib/core/routes/app_routes.dart
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/features/auth/views/login_view.dart';
+import 'package:jr_case_boilerplate/features/auth/views/register_view.dart';
+import 'package:jr_case_boilerplate/features/home/view/home_view.dart';
 import 'package:jr_case_boilerplate/features/splash/view/splash_view.dart';
 
 class AppRoutes {
@@ -25,6 +27,16 @@ class AppRoutes {
       case login:
         return MaterialPageRoute(
           builder: (context) => const LoginView(),
+          settings: settings,
+        );
+      case register:
+        return MaterialPageRoute(
+          builder: (context) => const RegisterView(),
+          settings: settings,
+        );
+      case home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeView(),
           settings: settings,
         );
     }
