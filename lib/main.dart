@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/core/constants/app_theme.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
-import 'package:jr_case_boilerplate/features/splash/view/splash_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       onGenerateRoute: AppRoutes.onGenerateRoute,
       initialRoute: AppRoutes.splash,
     );

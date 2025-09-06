@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
-import 'package:jr_case_boilerplate/core/constants/app_text_styles.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 
 class SplashView extends StatefulWidget {
@@ -42,9 +41,9 @@ class _SplashViewState extends State<SplashView> {
               SizedBox(height: 16),
               Text(
                 "Shartflix",
-                style: AppTextStyles.heading2.copyWith(
-                  color: AppColors.baseWhite,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayMedium!.copyWith(color: AppColors.baseWhite),
               ),
             ],
           ),
