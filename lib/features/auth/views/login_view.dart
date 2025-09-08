@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
+import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:lottie/lottie.dart';
@@ -73,7 +74,7 @@ class _LoginViewState extends ConsumerState<LoginView>
               duration: Duration(seconds: 2),
             ),
           );
-          AppRoutes.pushReplacementNamed(context, AppRoutes.home);
+          AppRoutes.pushReplacementNamed(context, AppRoutes.navBar);
         } else if (next.error != null && previous?.error != next.error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -93,10 +94,7 @@ class _LoginViewState extends ConsumerState<LoginView>
     });
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+      body: StackGradientBackground(
         child: SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(

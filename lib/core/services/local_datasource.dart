@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jr_case_boilerplate/core/services/storage_services.dart';
-import '../models/user_model.dart';
+import '../../features/auth/data/models/user_model.dart';
 
-final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
-  return AuthLocalDataSource(ref.read(storageServiceProvider));
+final LocalDataSourceProvider = Provider<LocalDataSource>((ref) {
+  return LocalDataSource(ref.read(storageServiceProvider));
 });
 
-class AuthLocalDataSource {
+class LocalDataSource {
   final StorageService _storageService;
 
-  AuthLocalDataSource(this._storageService);
+  LocalDataSource(this._storageService);
 
   Future<void> saveUserData(UserModel user, String token) async {
     await _storageService.saveUser(user.toJsonString());

@@ -1,13 +1,6 @@
 import 'package:jr_case_boilerplate/features/auth/data/models/user_model.dart';
 
 class AuthData {
-  final String id;
-  final String userId;
-  final String name;
-  final String email;
-  final String photoUrl;
-  final String token;
-
   AuthData({
     required this.id,
     required this.userId,
@@ -27,12 +20,18 @@ class AuthData {
       token: json['token'] ?? '',
     );
   }
+  final String id;
+  final String userId;
+  final String name;
+  final String email;
+  final String photoUrl;
+  final String token;
   UserModel toUserModel() {
     return UserModel(
       id: userId.isNotEmpty ? userId : id,
       email: email,
       name: name,
-      avatar: photoUrl.isNotEmpty ? photoUrl : null,
+      photoUrl: photoUrl.isNotEmpty ? photoUrl : null,
     );
   }
 }

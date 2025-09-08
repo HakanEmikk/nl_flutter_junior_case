@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
+import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -29,10 +30,7 @@ class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+      body: StackGradientBackground(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

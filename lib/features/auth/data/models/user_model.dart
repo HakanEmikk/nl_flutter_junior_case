@@ -5,7 +5,7 @@ class UserModel {
     required this.id,
     required this.email,
     required this.name,
-    this.avatar,
+    this.photoUrl,
   });
 
   factory UserModel.fromJsonString(String jsonString) {
@@ -17,16 +17,16 @@ class UserModel {
       id: json['id']?.toString() ?? '',
       email: json['email'] ?? '',
       name: json['name'] ?? '',
-      avatar: json['avatar'],
+      photoUrl: json['photoUrl'],
     );
   }
   final String id;
   final String email;
   final String name;
-  final String? avatar;
+  final String? photoUrl;
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'email': email, 'name': name, 'avatar': avatar};
+    return {'id': id, 'email': email, 'name': name, 'avatar': photoUrl};
   }
 
   String toJsonString() => json.encode(toJson());

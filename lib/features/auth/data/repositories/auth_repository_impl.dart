@@ -1,7 +1,6 @@
-// lib/features/auth/data/repositories/auth_repository_impl.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../datasources/auth_remote_datasource.dart';
-import '../datasources/auth_local_datasource.dart';
+import '../../../../core/services/local_datasource.dart';
 import '../models/user_model.dart';
 import '../models/login_request.dart';
 import 'auth_repository.dart';
@@ -9,14 +8,14 @@ import 'auth_repository.dart';
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepositoryImpl(
     ref.read(authRemoteDataSourceProvider),
-    ref.read(authLocalDataSourceProvider),
+    ref.read(LocalDataSourceProvider),
   );
 });
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remoteDataSource, this._localDataSource);
   final AuthRemoteDataSource _remoteDataSource;
-  final AuthLocalDataSource _localDataSource;
+  final LocalDataSource _localDataSource;
 
   @override
   Future<UserModel> login(String email, String password) async {
@@ -24,11 +23,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final request = LoginRequest(email: email, password: password);
       final response = await _remoteDataSource.login(request);
 
-      // ✅ Artık success yok → sadece code == 200 kontrolü
       if (response.response.code == 200 && response.data != null) {
         final user = response.data.toUserModel();
         final token = response.data.token;
-
+        await _localDataSource.saveUserData(user, token);
         return user;
       } else {
         throw Exception(

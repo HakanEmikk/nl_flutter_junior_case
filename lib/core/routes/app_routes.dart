@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/features/auth/views/login_view.dart';
 import 'package:jr_case_boilerplate/features/auth/views/register_view.dart';
 import 'package:jr_case_boilerplate/features/home/view/home_view.dart';
+import 'package:jr_case_boilerplate/features/nav_bar/view/nav_bar_view.dart';
 import 'package:jr_case_boilerplate/features/splash/view/splash_view.dart';
 
 class AppRoutes {
@@ -10,6 +11,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String register = '/register';
+  static const String navBar = '/nav-bar';
   static const String forgotPassword = '/forgot-password';
 
   static Map<String, WidgetBuilder> get routes => {
@@ -37,6 +39,11 @@ class AppRoutes {
       case home:
         return MaterialPageRoute(
           builder: (context) => const HomeView(),
+          settings: settings,
+        );
+      case navBar:
+        return MaterialPageRoute(
+          builder: (context) => const NavBarView(),
           settings: settings,
         );
     }

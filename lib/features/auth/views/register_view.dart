@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
+import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
@@ -26,23 +27,9 @@ class _RegisterViewState extends ConsumerState<RegisterView>
   bool _isConfirmPasswordVisible = false;
   bool _acceptTerms = false;
 
-  late AnimationController _lottieController;
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
-
   @override
   void initState() {
     super.initState();
-    _lottieController = AnimationController(vsync: this);
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
-    );
-
-    _fadeController.forward();
   }
 
   @override
@@ -51,8 +38,6 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _lottieController.dispose();
-    _fadeController.dispose();
     super.dispose();
   }
 
@@ -96,10 +81,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
       }
     });
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+      body: StackGradientBackground(
         child: SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(

@@ -1,10 +1,7 @@
 import 'package:jr_case_boilerplate/features/auth/data/models/auth_data.dart';
-import 'package:jr_case_boilerplate/features/auth/data/models/response_info.dart';
+import 'package:jr_case_boilerplate/core/models/response_info.dart';
 
 class AuthResponse {
-  final ResponseInfo response;
-  final AuthData data;
-
   AuthResponse({required this.response, required this.data});
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
@@ -13,4 +10,6 @@ class AuthResponse {
       data: AuthData.fromJson(json['data']),
     );
   }
+  final ResponseInfo response;
+  final AuthData data;
 }
