@@ -24,12 +24,15 @@ class AppColors {
   // Others
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+  static const Color gradientBlack = Color(0xFF090909);
+  static const Color navBarItemgraientColor = Color(0xFFE50914);
+  static const Color navBarItemgraientColor2 = Color(0xFF7F050B);
+  static const Color bottomSheetButton = Color(0xFFB2040C);
   //Gradients
-  static const RadialGradient primaryGradient = RadialGradient(
-    colors: [Color(0xFF3F0306), Color(0xFF090909)],
-    stops: [0.2, 0.60],
-    center: Alignment(0.0, -0.9),
-    radius: 1.25,
-    tileMode: TileMode.clamp,
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF3F0306), gradientBlack],
+    stops: [0.0, 0.55],
+    begin: AlignmentGeometry.topCenter,
+    end: AlignmentGeometry.bottomCenter,
   );
 }
