@@ -16,10 +16,11 @@ class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDatasource _homeRemoteDatasource;
   final LocalDataSource _localDataSource;
   @override
-  Future<List<MovieModel>> getMovie() async {
+  Future<List<MovieModel>> getMovie(int currentPage) async {
     try {
       final response = await _homeRemoteDatasource.getMovie(
         await _localDataSource.getCachedToken(),
+        currentPage,
       );
 
       if (response.response.code == 200 && response.data != null) {

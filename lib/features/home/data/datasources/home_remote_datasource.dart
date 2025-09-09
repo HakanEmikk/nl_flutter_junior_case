@@ -11,11 +11,11 @@ class HomeRemoteDatasource {
   HomeRemoteDatasource(this._dio);
   final Dio _dio;
 
-  Future<MovieResponse> getMovie(String? token) async {
+  Future<MovieResponse> getMovie(String? token, int currentPage) async {
     try {
       final response = await _dio.get(
         'movie/list',
-        queryParameters: {'page': 1},
+        queryParameters: {'page': currentPage},
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
