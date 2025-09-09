@@ -28,6 +28,8 @@ class AppColors {
   static const Color navBarItemgraientColor = Color(0xFFE50914);
   static const Color navBarItemgraientColor2 = Color(0xFF7F050B);
   static const Color bottomSheetButton = Color(0xFFB2040C);
+  static const Color bottomSheetButton2 = Color(0xFF6F060B);
+  static const Color bottomSheetCardGradient = Color(0xFF5949E6);
   //Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF3F0306), gradientBlack],
