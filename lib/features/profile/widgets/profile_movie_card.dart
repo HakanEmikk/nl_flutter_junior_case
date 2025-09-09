@@ -4,9 +4,8 @@ import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/models/movie_model.dart';
 
 class ProfileMovieCard extends StatelessWidget {
+  const ProfileMovieCard({required this.movie, super.key});
   final MovieModel movie;
-
-  const ProfileMovieCard({Key? key, required this.movie}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

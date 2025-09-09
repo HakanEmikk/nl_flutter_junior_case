@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
+import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
+import 'package:jr_case_boilerplate/core/widgets/bottom_sheet/offer_bottom_sheet.dart';
 import 'package:jr_case_boilerplate/features/profile/providers/profile_provider.dart';
 import 'package:jr_case_boilerplate/features/profile/widgets/movie_gridview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +28,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     final profileState = ref.watch(profileProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF2C1810),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -35,7 +36,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     Row(
@@ -51,7 +52,9 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                         ),
 
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            showCustomBottomSheet(context);
+                          },
                           child: Container(
                             width: 121,
                             height: 36,
@@ -95,6 +98,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         CircleAvatar(
+                          radius: 28,
                           backgroundImage: profileState.user?.photoUrl != null
                               ? NetworkImage(profileState.user!.photoUrl!)
                               : null,
@@ -102,7 +106,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                               ? Icon(Icons.person)
                               : null,
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -126,7 +130,12 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                         ),
 
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            AppRoutes.pushReplacementNamed(
+                              context,
+                              AppRoutes.imageUpload,
+                            );
+                          },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
