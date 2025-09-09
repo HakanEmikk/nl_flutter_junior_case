@@ -54,7 +54,7 @@ class ProfileMovieCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  movie.title,
+                  movie.year,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w400,
                     color: AppColors.baseWhite.withOpacity(0.5),

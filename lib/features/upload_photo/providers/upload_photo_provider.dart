@@ -87,6 +87,7 @@ class UploadPhotoNotifier extends StateNotifier<UploadPhotoState> {
     state = const UploadPhotoState.loading();
     try {
       final user = await _repository.setPhoto(image);
+
       state = const UploadPhotoState.loaded();
     } catch (e) {
       state = UploadPhotoState.error(e.toString());

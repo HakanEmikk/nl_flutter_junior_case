@@ -6,15 +6,35 @@ import 'package:jr_case_boilerplate/core/widgets/bottom_sheet/offer_bottom_sheet
 import 'package:jr_case_boilerplate/features/profile/providers/profile_provider.dart';
 import 'package:jr_case_boilerplate/features/profile/widgets/movie_gridview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
+import 'package:jr_case_boilerplate/main.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  const ProfileView({super.key});
 
   @override
   ConsumerState<ProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends ConsumerState<ProfileView> {
+class _ProfileViewState extends ConsumerState<ProfileView> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    ref.read(profileProvider.notifier).fetchFavoriteMovies();
+    super.didPopNext();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +63,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Profil',
+                          AppLocalizations.of(context)!.profile,
                           style: Theme.of(context).textTheme.headlineSmall!
                               .copyWith(
                                 color: AppColors.baseWhite,
@@ -67,19 +87,19 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                               ),
                               borderRadius: BorderRadius.circular(53),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
-                                    Icons.favorite,
+                                  const ImageIcon(
+                                    AssetImage('assets/images/Gem.png'),
                                     color: AppColors.baseWhite,
                                     size: 20,
                                   ),
                                   SizedBox(width: 4),
                                   Text(
-                                    'Sınırlı Tekıif',
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.limitedOffer,
+                                    style: const TextStyle(
                                       color: AppColors.baseWhite,
                                       fontSize: 12,
                                       fontFamily: "12Px Montserrat",
@@ -103,7 +123,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                               ? NetworkImage(profileState.user!.photoUrl!)
                               : null,
                           child: profileState.user?.photoUrl == null
-                              ? Icon(Icons.person)
+                              ? const Icon(Icons.person)
                               : null,
                         ),
                         const SizedBox(width: 10),
@@ -119,7 +139,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                                   ),
                             ),
                             Text(
-                              "ID: ${profileState.user?.id ?? ""}",
+                              "${AppLocalizations.of(context)!.userId} ${profileState.user?.id ?? ""}",
                               style: Theme.of(context).textTheme.bodyMedium!
                                   .copyWith(
                                     color: AppColors.baseWhite.withOpacity(0.6),
@@ -131,10 +151,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
                         GestureDetector(
                           onTap: () {
-                            AppRoutes.pushReplacementNamed(
-                              context,
-                              AppRoutes.imageUpload,
-                            );
+                            AppRoutes.pushNamed(context, AppRoutes.imageUpload);
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -146,7 +163,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              'Fotoğraf Ekle',
+                              AppLocalizations.of(context)!.addPhoto,
                               style: Theme.of(context).textTheme.bodyMedium!
                                   .copyWith(
                                     fontWeight: FontWeight.w600,
@@ -167,7 +184,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Beğendiklerim',
+                    AppLocalizations.of(context)!.favorites,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: AppColors.baseWhite,
                       fontWeight: FontWeight.w600,

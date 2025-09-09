@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/models/movie_model.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 
 class HomeMovieListItem extends StatefulWidget {
-  final MovieModel movie;
-  final bool isActive;
-  final VoidCallback onFavoriteToggle;
-
   const HomeMovieListItem({
-    Key? key,
+    super.key,
     required this.movie,
     required this.isActive,
     required this.onFavoriteToggle,
-  }) : super(key: key);
+  });
+  final MovieModel movie;
+  final bool isActive;
+  final VoidCallback onFavoriteToggle;
 
   @override
   State<HomeMovieListItem> createState() => _HomeMovieListItemState();
@@ -88,7 +88,7 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
       fit: StackFit.expand,
       children: [
         ClipRRect(
-          child: Image.network(widget.movie.Images![0], fit: BoxFit.fill),
+          child: Image.network(widget.movie.Images![1], fit: BoxFit.cover),
         ),
 
         AnimatedContainer(
@@ -108,7 +108,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
           ),
         ),
 
-        // Favori butonu - Animasyonlu
         Positioned(
           bottom: 130,
           right: 20,
@@ -125,20 +124,20 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
                     height: 72,
                     decoration: BoxDecoration(
                       color: widget.movie.isFavorite!
-                          ? AppColors.black.withOpacity(0.6)
+                          ? AppColors.black.withOpacity(0.2)
                           : AppColors.black.withOpacity(0.05),
                       border: Border.all(
                         color: widget.movie.isFavorite!
                             ? AppColors.baseWhite.withOpacity(0.6)
                             : AppColors.baseWhite.withOpacity(0.2),
                       ),
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(82),
                       boxShadow: const [BoxShadow(blurRadius: 15)],
                     ),
-                    child: Icon(
+                    child: ImageIcon(
                       widget.movie.isFavorite!
-                          ? Icons.favorite
-                          : Icons.favorite_border,
+                          ? const AssetImage('assets/images/Heart-fill.png')
+                          : const AssetImage('assets/images/Heart.png'),
                       color: widget.movie.isFavorite!
                           ? AppColors.navBarItemgraientColor
                           : AppColors.baseWhite,
@@ -151,7 +150,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
           ),
         ),
 
-        // Film bilgileri - Slide-in animasyonu
         Positioned(
           left: 20,
           bottom: 80,
@@ -164,7 +162,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Netflix logosu ve film başlığı
                     Row(
                       children: [
                         AnimatedContainer(
@@ -214,8 +211,12 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
                                     padding: const EdgeInsets.only(top: 4.0),
                                     child: Text(
                                       isExpanded
-                                          ? "Daha az göster"
-                                          : "Devamını oku",
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.showLess
+                                          : AppLocalizations.of(
+                                              context,
+                                            )!.showMore,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -231,8 +232,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
                         ),
                       ],
                     ),
-
-                    // Film bilgileri - Orijinal tasarım
                   ],
                 ),
               );

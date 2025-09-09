@@ -16,10 +16,10 @@ class CustomTextFormField extends StatelessWidget {
   });
   final TextEditingController? controller;
   final String? hintText;
-  final IconData? prefixIcon;
+  final String prefixIcon;
   final TextInputType? keyboardType;
   final bool isPassword;
-  final IconData? suffixIcon;
+  final String? suffixIcon;
   final VoidCallback? onSuffixTap;
   final bool isPasswordVisible;
   final String? Function(String?)? validator;
@@ -60,7 +60,11 @@ class CustomTextFormField extends StatelessWidget {
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 16, right: 12),
-            child: Icon(prefixIcon, color: AppColors.baseWhite, size: 20),
+            child: ImageIcon(
+              AssetImage(prefixIcon),
+              color: AppColors.baseWhite,
+              size: 24,
+            ),
           ),
           prefixIconConstraints: const BoxConstraints(
             minWidth: 48,
@@ -71,8 +75,8 @@ class CustomTextFormField extends StatelessWidget {
                   onTap: onSuffixTap,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16, left: 12),
-                    child: Icon(
-                      suffixIcon,
+                    child: ImageIcon(
+                      AssetImage(suffixIcon!),
                       color: AppColors.baseWhite.withOpacity(0.3),
                       size: 24,
                     ),

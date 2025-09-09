@@ -7,6 +7,7 @@ import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart'
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
@@ -56,8 +57,8 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           previous?.error != next.error) {
         if (next.isAuthenticated) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Kayıt başarılı!'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.registerSuccess),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               duration: Duration(seconds: 2),
@@ -158,7 +159,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     return Column(
       children: [
         Text(
-          'Hesap Oluştur',
+          AppLocalizations.of(context)!.createAccount,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium!.copyWith(color: AppColors.baseWhite),
@@ -166,7 +167,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         ),
         const SizedBox(height: 8),
         Text(
-          'Kullanıcı bilgilerini girerek kaydol',
+          AppLocalizations.of(context)!.enterInfo,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.9),
             fontWeight: FontWeight.w400,
@@ -183,15 +184,15 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         // Ad Soyad
         CustomTextFormField(
           controller: _nameController,
-          hintText: 'Ad Soyad',
-          prefixIcon: Icons.person_outline,
+          hintText: AppLocalizations.of(context)!.enterName,
+          prefixIcon: 'assets/images/User.png',
           keyboardType: TextInputType.name,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Ad soyad gerekli';
+              return AppLocalizations.of(context)!.nameRequired;
             }
             if (value.length < 3) {
-              return 'En az 3 karakter girin';
+              return AppLocalizations.of(context)!.nameMinChars;
             }
             return null;
           },
@@ -202,15 +203,15 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         // E-Posta
         CustomTextFormField(
           controller: _emailController,
-          hintText: 'E-Posta',
-          prefixIcon: Icons.email_outlined,
+          hintText: AppLocalizations.of(context)!.enterEmail,
+          prefixIcon: 'assets/images/Mail.png',
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'E-posta gerekli';
+              return AppLocalizations.of(context)!.emailRequired;
             }
             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'Geçerli bir e-posta girin';
+              return AppLocalizations.of(context)!.emailInvalid;
             }
             return null;
           },
@@ -221,13 +222,13 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         // Şifre
         CustomTextFormField(
           controller: _passwordController,
-          hintText: 'Şifre',
-          prefixIcon: Icons.lock_outline,
+          hintText: AppLocalizations.of(context)!.enterPassword,
+          prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
           isPasswordVisible: _isPasswordVisible,
           suffixIcon: _isPasswordVisible
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+              ? 'assets/images/Hide.png'
+              : 'assets/images/See.png',
           onSuffixTap: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
@@ -240,13 +241,13 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         // Şifre Tekrar
         CustomTextFormField(
           controller: _confirmPasswordController,
-          hintText: 'Şifre Tekrar',
-          prefixIcon: Icons.lock_outline,
+          hintText: AppLocalizations.of(context)!.enterConfirmPassword,
+          prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
           isPasswordVisible: _isPasswordVisible,
           suffixIcon: _isPasswordVisible
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+              ? 'assets/images/Hide.png'
+              : 'assets/images/See.png',
           onSuffixTap: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
@@ -254,10 +255,10 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Şifre tekrar gerekli';
+              return AppLocalizations.of(context)!.confirmPasswordRequired;
             }
             if (value != _passwordController.text) {
-              return 'Şifreler uyuşmuyor';
+              return AppLocalizations.of(context)!.passwordsDoNotMatch;
             }
             return null;
           },
@@ -291,7 +292,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
               borderRadius: BorderRadius.circular(6),
             ),
             child: _acceptTerms
-                ? Icon(Icons.check, size: 16, color: AppColors.baseWhite)
+                ? const Icon(Icons.check, size: 16, color: AppColors.baseWhite)
                 : null,
           ),
         ),
@@ -310,6 +311,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
                     color: AppColors.baseWhite.withOpacity(0.6),
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w600,
+                    decorationStyle: TextDecorationStyle.solid,
                   ),
                 ),
                 TextSpan(
@@ -336,7 +338,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           _handleRegister();
         },
         child: Text(
-          'Kaydol',
+          AppLocalizations.of(context)!.register,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: AppColors.baseWhite,
             fontWeight: FontWeight.w600,
@@ -388,7 +390,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Hesabın var mı? ',
+          AppLocalizations.of(context)!.haveAccount,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.8),
             fontWeight: FontWeight.w400,
@@ -400,7 +402,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
             AppRoutes.pushReplacementNamed(context, AppRoutes.login);
           },
           child: Text(
-            'Giriş Yap',
+            AppLocalizations.of(context)!.login,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: AppColors.baseWhite,
               fontWeight: FontWeight.w600,
@@ -421,8 +423,8 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     }
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lütfen kullanıcı sözleşmesini kabul edin'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.acceptTermsError),
           backgroundColor: AppColors.error,
         ),
       );

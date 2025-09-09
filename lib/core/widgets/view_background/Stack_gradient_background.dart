@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 
 class StackGradientBackground extends StatelessWidget {
+  const StackGradientBackground({required this.child, super.key});
   final Widget child;
-
-  const StackGradientBackground({Key? key, required this.child})
-    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
         // Ana linear gradient arka plan
         Container(
@@ -34,13 +33,13 @@ class StackGradientBackground extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
-                center: Alignment(0.0, -0.6),
+                center: const Alignment(0.0, -0.6),
                 radius: 0.8,
                 colors: [
-                  Color(0xffFF1B1B), // Açık kırmızı (şeffaf)
-                  Color(0xff8d0000).withOpacity(0), // Şeffaf
+                  const Color(0xffFF1B1B), // Açık kırmızı (şeffaf)
+                  const Color(0xff8d0000).withOpacity(0), // Şeffaf
                 ],
-                stops: [0.0, 0.9],
+                stops: const [0.0, 0.9],
               ),
             ),
           ),

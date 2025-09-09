@@ -4,6 +4,7 @@ import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/features/home/view/home_view.dart';
 import 'package:jr_case_boilerplate/features/nav_bar/widgets/custom_nav_bar_item.dart';
 import 'package:jr_case_boilerplate/features/profile/view/profile_view.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 
 class NavBarView extends StatefulWidget {
   const NavBarView({super.key});
@@ -55,15 +56,19 @@ class _NavBarViewState extends State<NavBarView> {
             elevation: 0,
             items: [
               CustomNavItem(
-                iconData: Icons.home,
-                label: 'Anasayfa',
+                iconData: 0 == _selectedIndex
+                    ? 'assets/images/Home-fill.png'
+                    : 'assets/images/Home.png',
+                label: AppLocalizations.of(context)!.home,
                 index: 0,
                 selectedIndex: _selectedIndex,
                 context: context,
               ).build(),
               CustomNavItem(
-                iconData: Icons.person,
-                label: "Profil",
+                iconData: 1 == _selectedIndex
+                    ? 'assets/images/Profile-fill.png'
+                    : 'assets/images/Profile.png',
+                label: AppLocalizations.of(context)!.profile,
                 index: 1,
                 selectedIndex: _selectedIndex,
                 context: context,

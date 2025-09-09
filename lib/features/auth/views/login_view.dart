@@ -5,6 +5,7 @@ import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_for
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,14 +68,14 @@ class _LoginViewState extends ConsumerState<LoginView>
           previous?.error != next.error) {
         if (next.isAuthenticated) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Giriş başarılı!'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.loginSuccess),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               duration: Duration(seconds: 2),
             ),
           );
-          AppRoutes.pushReplacementNamed(context, AppRoutes.navBar);
+          AppRoutes.pushNamed(context, AppRoutes.navBar);
         } else if (next.error != null && previous?.error != next.error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -248,7 +249,7 @@ class _LoginViewState extends ConsumerState<LoginView>
     return Column(
       children: [
         Text(
-          'Giriş Yap',
+          AppLocalizations.of(context)!.login,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium!.copyWith(color: AppColors.baseWhite),
@@ -256,7 +257,8 @@ class _LoginViewState extends ConsumerState<LoginView>
         ),
         const SizedBox(height: 8),
         Text(
-          'Kullanıcı bilgilerinle giriş yap',
+          AppLocalizations.of(context)!.enterLoginInfo,
+
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.7),
             fontWeight: FontWeight.w400,
@@ -272,15 +274,15 @@ class _LoginViewState extends ConsumerState<LoginView>
       children: [
         CustomTextFormField(
           controller: _emailController,
-          hintText: 'E-Posta',
-          prefixIcon: Icons.email_outlined,
+          hintText: AppLocalizations.of(context)!.enterEmail,
+          prefixIcon: 'assets/images/Mail.png',
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'E-posta gerekli';
+              return AppLocalizations.of(context)!.emailRequired;
             }
             if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'Geçerli bir e-posta girin';
+              return AppLocalizations.of(context)!.emailInvalid;
             }
             return null;
           },
@@ -288,13 +290,13 @@ class _LoginViewState extends ConsumerState<LoginView>
         const SizedBox(height: 16),
         CustomTextFormField(
           controller: _passwordController,
-          hintText: 'Şifre',
-          prefixIcon: Icons.lock_outline,
+          hintText: AppLocalizations.of(context)!.enterPassword,
+          prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
           isPasswordVisible: _isPasswordVisible,
           suffixIcon: _isPasswordVisible
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+              ? 'assets/images/Hide.png'
+              : 'assets/images/See.png',
           onSuffixTap: () {
             setState(() {
               _isPasswordVisible = !_isPasswordVisible;
@@ -302,10 +304,10 @@ class _LoginViewState extends ConsumerState<LoginView>
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Şifre gerekli';
+              return AppLocalizations.of(context)!.passwordRequired;
             }
             if (value.length < 6) {
-              return 'Şifre en az 6 karakter olmalı';
+              return AppLocalizations.of(context)!.passwordMinLength;
             }
             return null;
           },
@@ -320,7 +322,7 @@ class _LoginViewState extends ConsumerState<LoginView>
       child: TextButton(
         onPressed: () {},
         child: Text(
-          'Şifre Unuttum',
+          AppLocalizations.of(context)!.forgotPassword,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite,
             fontWeight: FontWeight.w600,
@@ -346,7 +348,7 @@ class _LoginViewState extends ConsumerState<LoginView>
                 ),
               )
             : Text(
-                'Giriş Yap',
+                AppLocalizations.of(context)!.login,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: AppColors.baseWhite,
                   fontWeight: FontWeight.w600,
@@ -398,7 +400,7 @@ class _LoginViewState extends ConsumerState<LoginView>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Bir hesabın yok mu? ',
+          AppLocalizations.of(context)!.noAccount,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: AppColors.baseWhite.withOpacity(0.8),
             fontWeight: FontWeight.w400,
@@ -406,10 +408,10 @@ class _LoginViewState extends ConsumerState<LoginView>
         ),
         TextButton(
           onPressed: () {
-            AppRoutes.pushReplacementNamed(context, AppRoutes.register);
+            AppRoutes.pushNamed(context, AppRoutes.register);
           },
           child: Text(
-            'Kayıt Ol',
+            AppLocalizations.of(context)!.register,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: AppColors.baseWhite,
               fontWeight: FontWeight.w600,
