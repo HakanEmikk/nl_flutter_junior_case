@@ -26,7 +26,7 @@ class UserModel {
   final String? photoUrl;
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'email': email, 'name': name, 'avatar': photoUrl};
+    return {'id': id, 'email': email, 'name': name, 'photoUrl': photoUrl};
   }
 
   String toJsonString() => json.encode(toJson());
