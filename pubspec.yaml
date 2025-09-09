@@ -24,6 +24,9 @@ dev_dependencies:
   dio: ^5.4.0
   shared_preferences: ^2.2.2
   equatable: ^2.0.5
+  dotted_border: ^2.0.0+3
+  image_picker: ^1.0.4
+  permission_handler: ^11.0.1
 
   flutter_lints: ^6.0.0
 
