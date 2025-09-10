@@ -63,16 +63,17 @@ class _LoginViewState extends ConsumerState<LoginView>
 
     final authState = ref.watch(authProvider);
     final uiState = ref.watch(uiStateProvider);
+
     ref.listen(authProvider, (previous, next) {
       // Sadece gerçekten state değiştiğinde çalış
       if (previous?.isAuthenticated != next.isAuthenticated ||
           previous?.error != next.error) {
         if (next.isAuthenticated) {
+          AppRoutes.pushNamed(context, AppRoutes.navBar);
           SnackbarHelper.success(
             context,
             AppLocalizations.of(context)!.loginSuccess,
           );
-          AppRoutes.pushNamed(context, AppRoutes.navBar);
         } else if (next.error != null && previous?.error != next.error) {
           SnackbarHelper.error(context, next.error!);
         }

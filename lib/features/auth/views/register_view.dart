@@ -219,7 +219,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
             }
             return null;
           },
-          suffixIcon: uiState.isPasswordVisible
+          suffixIcon: !uiState.isPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
@@ -238,7 +238,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
           isPasswordVisible: uiState.isConfirmPasswordVisible,
-          suffixIcon: uiState.isConfirmPasswordVisible
+          suffixIcon: !uiState.isConfirmPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
@@ -399,7 +399,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           onPressed: () {
             ref.read(registerUIStateProvider.notifier).reset();
             // Giriş sayfasına git
-            AppRoutes.pushReplacementNamed(context, AppRoutes.login);
+            AppRoutes.pushNamed(context, AppRoutes.login);
           },
           child: Text(
             AppLocalizations.of(context)!.login,
