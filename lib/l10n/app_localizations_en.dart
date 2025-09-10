@@ -132,4 +132,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterLoginInfo => 'Log in with your user details';
+
+  @override
+  String get subtitle =>
+      'Buy a token package now and get rewards\nand new connections with notifications on!';
+
+  @override
+  String get bonusFeatures => 'Your Bonuses';
+
+  @override
+  String get bonusPremiumMessage => 'Premium\nMessage';
+
+  @override
+  String get bonusMoreMatches => 'More\nMatches';
+
+  @override
+  String get bonusHighlight => 'Highlight';
+
+  @override
+  String get bonusMoreLikes => 'More\nLikes';
+
+  @override
+  String get packageSelectionTitle =>
+      'Select a token package to unlock your profile';
+
+  @override
+  String get coins => 'Coins';
+
+  @override
+  String get pricePerWeek => 'Per week';
+
+  @override
+  String get seeAllTokens => 'See All Tokens';
 }

@@ -39,5 +39,16 @@
   "forgotPassword": "Şifre Unuttum",
   "noAccount": "Bir hesabın yok mu? ",
   "signUp": "Kayıt Ol",
-  "enterLoginInfo": "Kullanıcı bilgilerinle giriş yap"
+  "enterLoginInfo": "Kullanıcı bilgilerinle giriş yap",
+  "limitedOffer": "Sınırlı Teklif",
+  "subtitle": "Jeton paketini şimdi satın alırsın kazanım ve yeni\nbağlantıları bildirim açık!",
+  "bonusFeatures": "Alacağınız Bonuslar",
+  "bonusPremiumMessage": "Premium\nMesaj",
+  "bonusMoreMatches": "Daha\nFazla Eşleşme",
+  "bonusHighlight": "Öne\nÇıkarma",
+  "bonusMoreLikes": "Daha\nFazla Beğeni",
+  "packageSelectionTitle": "Kişili açmak için bir jeton paketi seçin",
+  "coins": "Jeton",
+  "pricePerWeek": "Başına haftalık",
+  "seeAllTokens": "Tüm Jetonları Gör"
 }

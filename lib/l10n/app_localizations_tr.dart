@@ -131,4 +131,36 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get enterLoginInfo => 'Kullanıcı bilgilerinle giriş yap';
+
+  @override
+  String get subtitle =>
+      'Jeton paketini şimdi satın alırsın kazanım ve yeni\nbağlantıları bildirim açık!';
+
+  @override
+  String get bonusFeatures => 'Alacağınız Bonuslar';
+
+  @override
+  String get bonusPremiumMessage => 'Premium\nMesaj';
+
+  @override
+  String get bonusMoreMatches => 'Daha\nFazla Eşleşme';
+
+  @override
+  String get bonusHighlight => 'Öne\nÇıkarma';
+
+  @override
+  String get bonusMoreLikes => 'Daha\nFazla Beğeni';
+
+  @override
+  String get packageSelectionTitle =>
+      'Kişili açmak için bir jeton paketi seçin';
+
+  @override
+  String get coins => 'Jeton';
+
+  @override
+  String get pricePerWeek => 'Başına haftalık';
+
+  @override
+  String get seeAllTokens => 'Tüm Jetonları Gör';
 }

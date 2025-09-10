@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
+import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 
 class CustomBottomSheet extends StatefulWidget {
   const CustomBottomSheet({Key? key}) : super(key: key);
@@ -11,42 +12,44 @@ class CustomBottomSheet extends StatefulWidget {
 }
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
-  int selectedPackageIndex = 1; // Default olarak ortadaki paket seçili
+  int selectedPackageIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return StackGradientBackground(
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(32)),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              // Kapatma butonu ve başlık
-              _buildHeader(),
-              const SizedBox(height: 12),
+      child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(32)),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Kapatma butonu ve başlık
+                _buildHeader(),
+                const SizedBox(height: 12),
 
-              // Alt başlık
-              _buildSubtitle(),
-              const SizedBox(height: 24),
+                // Alt başlık
+                _buildSubtitle(),
+                const SizedBox(height: 24),
 
-              // Bonus özellikler
-              _buildBonusFeatures(),
-              const SizedBox(height: 32),
+                // Bonus özellikler
+                _buildBonusFeatures(),
+                const SizedBox(height: 32),
 
-              // Paket seçim başlığı
-              _buildPackageSelectionTitle(),
-              const SizedBox(height: 32),
+                // Paket seçim başlığı
+                _buildPackageSelectionTitle(),
+                const SizedBox(height: 32),
 
-              // Paket seçenekleri
-              _buildPackageOptions(),
-              const SizedBox(height: 24),
+                // Paket seçenekleri
+                _buildPackageOptions(),
+                const SizedBox(height: 24),
 
-              // Devam et butonu
-              _buildContinueButton(),
-              const SizedBox(height: 16),
-            ],
+                // Devam et butonu
+                _buildContinueButton(),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
@@ -59,7 +62,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
       children: [
         const SizedBox(width: 24), // Başlığı ortalamak için
         Text(
-          'Sınırlı Teklif',
+          AppLocalizations.of(context)!.limitedOffer,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium!.copyWith(color: AppColors.baseWhite),
@@ -88,7 +91,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   Widget _buildSubtitle() {
     return Text(
-      'Jeton paketini şimdi satın alırsın kazanım ve yeni\nbağlantıları bildirim açık!',
+      AppLocalizations.of(context)!.subtitle,
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
         color: AppColors.baseWhite.withOpacity(0.9),
@@ -101,6 +104,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
+        boxShadow: [],
         borderRadius: BorderRadius.circular(24),
         gradient: RadialGradient(
           colors: [
@@ -113,7 +117,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
       child: Column(
         children: [
           Text(
-            'Alacağınız Bonuslar',
+            AppLocalizations.of(context)!.bonusFeatures,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: AppColors.baseWhite,
               fontWeight: FontWeight.w500,
@@ -123,10 +127,19 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildBonusItem(Icons.star, 'Premium\nMesaj'),
-              _buildBonusItem(Icons.favorite, 'Daha\nFazla Eşleşme'),
-              _buildBonusItem(Icons.visibility, 'Öne\nÇıkarma'),
-              _buildBonusItem(Icons.favorite_border, 'Daha\nFazla Beğeni'),
+              _buildBonusItem('assets/images/IconlyPro.png', 'Premium\nMesaj'),
+              _buildBonusItem(
+                'assets/images/bottom-two-heart.png',
+                AppLocalizations.of(context)!.bonusMoreMatches,
+              ),
+              _buildBonusItem(
+                'assets/images/Rectangle.png',
+                AppLocalizations.of(context)!.bonusHighlight,
+              ),
+              _buildBonusItem(
+                'assets/images/bottom-heart.png',
+                AppLocalizations.of(context)!.bonusMoreLikes,
+              ),
             ],
           ),
         ],
@@ -134,7 +147,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
     );
   }
 
-  Widget _buildBonusItem(IconData icon, String text) {
+  Widget _buildBonusItem(String icon, String text) {
     return Column(
       children: [
         Container(
@@ -155,7 +168,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             ],
           ),
 
-          child: Icon(icon, color: Colors.white, size: 24),
+          child: Image.asset(icon, width: 24, height: 24),
         ),
         const SizedBox(height: 8),
         Text(
@@ -173,7 +186,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   Widget _buildPackageSelectionTitle() {
     return Text(
-      'Kişili açmak için bir jeton paketi seçin',
+      AppLocalizations.of(context)!.packageSelectionTitle,
       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         fontWeight: FontWeight.w500,
         color: AppColors.baseWhite,
@@ -191,16 +204,16 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         isPopular: false,
       ),
       PackageOption(
-        tokens: "2.000",
-        bonus: "3.375",
-        price: '₺799,99',
+        tokens: "2.00",
+        bonus: "3.37",
+        price: '₺799,9',
         discount: '+70%',
         isPopular: true,
       ),
       PackageOption(
-        tokens: "1.000",
-        bonus: "1.350",
-        price: '₺399,99',
+        tokens: "1.00",
+        bonus: "1.35",
+        price: '₺399,9',
         discount: '+35%',
         isPopular: false,
       ),
@@ -255,8 +268,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             boxShadow: [
               BoxShadow(
                 color: AppColors.baseWhite.withOpacity(0.3),
-                offset: const Offset(-4, -4),
+                offset: const Offset(0, 0),
                 blurRadius: 15,
+                blurStyle: BlurStyle.solid,
               ),
             ],
           ),
@@ -284,7 +298,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
                 // Jeton yazısı
                 Text(
-                  'Jeton',
+                  AppLocalizations.of(context)!.coins,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: AppColors.baseWhite,
                     fontWeight: FontWeight.w500,
@@ -303,7 +317,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
                 // Başına düşen fiyat
                 Text(
-                  'Başına haftalık',
+                  AppLocalizations.of(context)!.pricePerWeek,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: AppColors.baseWhite.withOpacity(0.8),
                     fontWeight: FontWeight.w500,
@@ -357,7 +371,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         },
 
         child: Text(
-          'Tüm Jetonları Gör',
+          AppLocalizations.of(context)!.seeAllTokens,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: AppColors.baseWhite,
             fontWeight: FontWeight.w600,
@@ -392,6 +406,7 @@ void showCustomBottomSheet(BuildContext context) {
     backgroundColor: Colors.transparent,
     builder: (context) => SizedBox(
       height: MediaQuery.of(context).size.height * 0.75,
+      width: MediaQuery.of(context).size.width,
       child: const CustomBottomSheet(),
     ),
   );

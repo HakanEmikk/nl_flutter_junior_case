@@ -343,6 +343,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log in with your user details'**
   String get enterLoginInfo;
+
+  /// No description provided for @subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy a token package now and get rewards\nand new connections with notifications on!'**
+  String get subtitle;
+
+  /// No description provided for @bonusFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Bonuses'**
+  String get bonusFeatures;
+
+  /// No description provided for @bonusPremiumMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium\nMessage'**
+  String get bonusPremiumMessage;
+
+  /// No description provided for @bonusMoreMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'More\nMatches'**
+  String get bonusMoreMatches;
+
+  /// No description provided for @bonusHighlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight'**
+  String get bonusHighlight;
+
+  /// No description provided for @bonusMoreLikes.
+  ///
+  /// In en, this message translates to:
+  /// **'More\nLikes'**
+  String get bonusMoreLikes;
+
+  /// No description provided for @packageSelectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a token package to unlock your profile'**
+  String get packageSelectionTitle;
+
+  /// No description provided for @coins.
+  ///
+  /// In en, this message translates to:
+  /// **'Coins'**
+  String get coins;
+
+  /// No description provided for @pricePerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Per week'**
+  String get pricePerWeek;
+
+  /// No description provided for @seeAllTokens.
+  ///
+  /// In en, this message translates to:
+  /// **'See All Tokens'**
+  String get seeAllTokens;
 }
 
 class _AppLocalizationsDelegate

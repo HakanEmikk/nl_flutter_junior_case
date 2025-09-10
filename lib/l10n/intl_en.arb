@@ -39,5 +39,16 @@
   "forgotPassword": "Forgot Password",
   "noAccount": "Don't have an account? ",
   "signUp": "Sign Up",
-  "enterLoginInfo": "Log in with your user details"
+  "enterLoginInfo": "Log in with your user details",
+  "limitedOffer": "Limited Offer",
+  "subtitle": "Buy a token package now and get rewards\nand new connections with notifications on!",
+  "bonusFeatures": "Your Bonuses",
+  "bonusPremiumMessage": "Premium\nMessage",
+  "bonusMoreMatches": "More\nMatches",
+  "bonusHighlight": "Highlight",
+  "bonusMoreLikes": "More\nLikes",
+  "packageSelectionTitle": "Select a token package to unlock your profile",
+  "coins": "Coins",
+  "pricePerWeek": "Per week",
+  "seeAllTokens": "See All Tokens"
 }
