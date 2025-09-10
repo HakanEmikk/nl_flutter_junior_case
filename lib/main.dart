@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jr_case_boilerplate/core/constants/app_theme.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,14 @@ import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // her ekranda şeffaf
+      statusBarIconBrightness: Brightness.light, // ikonlar beyaz
+    ),
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -30,10 +39,7 @@ class MyApp extends StatelessWidget {
         }
         return const Locale('tr');
       },
-      supportedLocales: const [
-        Locale('tr'), // Türkçe
-        Locale('en'), // İngilizce
-      ],
+      supportedLocales: const [Locale('tr'), Locale('en')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

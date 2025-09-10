@@ -40,7 +40,7 @@ class CustomNavItem {
                     AppColors.navBarItemgraientColor,
                     AppColors.navBarItemgraientColor2,
                   ],
-                  center: Alignment.topCenter, // Üstten başlasın
+                  center: Alignment.topCenter,
                   radius: 2.0,
                   stops: [0.0, 0.7],
                 )

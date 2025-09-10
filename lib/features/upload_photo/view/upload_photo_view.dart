@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
+import 'package:jr_case_boilerplate/core/helpers/snackbar_helper.dart';
+
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -22,17 +24,18 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
   @override
   Widget build(BuildContext context) {
     final uploadPhotoState = ref.watch(uploadPhotoProvider);
-    if (ref.read(uploadPhotoProvider).isLoading) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.photoUploaded),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
 
+    ref.listen(uploadPhotoProvider, (previous, next) {
+      if (previous?.isLoading != next.isLoading ||
+          previous?.error != next.error) {
+        if (next.isLoading) {
+          SnackbarHelper.success(
+            context,
+            AppLocalizations.of(context)!.photoUploaded,
+          );
+        }
+      }
+    });
     return Scaffold(
       body: StackGradientBackground(
         child: SafeArea(
@@ -298,8 +301,6 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
                   leading: const Icon(Icons.camera_alt, color: Colors.black87),
                   title: Text(AppLocalizations.of(context)!.camera),
                   onTap: () async {
-                    // Navigator.pop(context);
-
                     final XFile? image = await picker.pickImage(
                       source: ImageSource.camera,
                       maxWidth: 1024,
@@ -309,6 +310,7 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
 
                     if (image != null) {
                       ref.read(uploadPhotoProvider.notifier).photoloaded(image);
+                      Navigator.pop(context);
                     }
                   },
                 ),

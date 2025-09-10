@@ -49,8 +49,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> with RouteAware {
 
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
         decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: SafeArea(
           child: Column(
@@ -96,7 +94,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> with RouteAware {
                                     color: AppColors.baseWhite,
                                     size: 20,
                                   ),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Text(
                                     AppLocalizations.of(context)!.limitedOffer,
                                     style: const TextStyle(
@@ -115,7 +113,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> with RouteAware {
                     ),
                     const SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CircleAvatar(
                           radius: 28,

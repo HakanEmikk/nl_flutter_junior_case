@@ -15,11 +15,7 @@ class NavBarView extends StatefulWidget {
 
 class _NavBarViewState extends State<NavBarView> {
   int _selectedIndex = 0;
-  final List<Widget> _views = [
-    const HomeView(),
-    const ProfileView(),
-    // ProfileView(),
-  ];
+  final List<Widget> _views = [const HomeView(), const ProfileView()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
