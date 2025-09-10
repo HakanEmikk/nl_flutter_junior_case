@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
-import 'package:jr_case_boilerplate/core/widgets/bottom_sheet/offer_bottom_sheet.dart';
+import 'package:jr_case_boilerplate/core/widgets/bottom_sheet/custom_bottom_sheet.dart';
 import 'package:jr_case_boilerplate/features/profile/providers/profile_provider.dart';
 import 'package:jr_case_boilerplate/features/profile/widgets/movie_gridview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

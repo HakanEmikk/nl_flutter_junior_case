@@ -20,7 +20,7 @@ class _SplashViewState extends State<SplashView> {
   }
 
   void navigateToLogin() {
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       if (mounted) {
         AppRoutes.pushReplacementNamed(context, AppRoutes.login);
       }
@@ -37,7 +37,7 @@ class _SplashViewState extends State<SplashView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset('assets/images/Icon.png', width: 125, height: 125),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 "Shartflix",
                 style: Theme.of(
