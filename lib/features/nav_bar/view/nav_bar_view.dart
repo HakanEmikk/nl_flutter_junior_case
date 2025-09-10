@@ -2,24 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:jr_case_boilerplate/features/home/view/home_view.dart';
+import 'package:jr_case_boilerplate/features/nav_bar/providers/navbar_index_provider.dart';
 import 'package:jr_case_boilerplate/features/nav_bar/widgets/custom_nav_bar_item.dart';
 import 'package:jr_case_boilerplate/features/profile/view/profile_view.dart';
 import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavBarView extends StatefulWidget {
+class NavBarView extends ConsumerWidget {
   const NavBarView({super.key});
 
   @override
-  State<NavBarView> createState() => _NavBarViewState();
-}
-
-class _NavBarViewState extends State<NavBarView> {
-  int _selectedIndex = 0;
-  final List<Widget> _views = [const HomeView(), const ProfileView()];
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(navBarIndexProvider);
+    final views = const [HomeView(), ProfileView()];
     return Scaffold(
-      body: _views[_selectedIndex],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          // Fade + Slide animasyonu
+          final offsetAnimation = Tween<Offset>(
+            begin: const Offset(0.1, 0.0), // sağdan hafif gelsin
+            end: Offset.zero,
+          ).animate(animation);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: FadeTransition(opacity: animation, child: child),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(selectedIndex),
+          child: views[selectedIndex],
+        ),
+      ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Colors.grey[900]),
         child: Container(
@@ -35,38 +50,40 @@ class _NavBarViewState extends State<NavBarView> {
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            currentIndex: _selectedIndex,
-            onTap: (value) {
-              setState(() {
-                _selectedIndex = value;
-              });
-            },
+            currentIndex: selectedIndex,
+            onTap: (value) =>
+                ref.read(navBarIndexProvider.notifier).state = value,
             backgroundColor: Colors.transparent,
 
             unselectedItemColor: Colors.transparent,
-            selectedLabelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-            unselectedLabelStyle: TextStyle(fontSize: 11),
+            selectedLabelStyle: Theme.of(context).textTheme.bodyMedium!
+                .copyWith(
+                  color: AppColors.baseWhite,
+                  fontWeight: FontWeight.w500,
+                ),
+            unselectedLabelStyle: Theme.of(context).textTheme.bodyMedium!
+                .copyWith(
+                  color: AppColors.baseWhite,
+                  fontWeight: FontWeight.w500,
+                ),
             elevation: 0,
             items: [
               CustomNavItem(
-                iconData: 0 == _selectedIndex
+                iconData: 0 == selectedIndex
                     ? 'assets/images/Home-fill.png'
                     : 'assets/images/Home.png',
                 label: AppLocalizations.of(context)!.home,
                 index: 0,
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 context: context,
               ).build(),
               CustomNavItem(
-                iconData: 1 == _selectedIndex
+                iconData: 1 == selectedIndex
                     ? 'assets/images/Profile-fill.png'
                     : 'assets/images/Profile.png',
                 label: AppLocalizations.of(context)!.profile,
                 index: 1,
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 context: context,
               ).build(),
             ],
