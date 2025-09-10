@@ -14,6 +14,7 @@ class CustomTextFormField extends StatelessWidget {
     this.isPasswordVisible = false,
     this.validator,
   });
+
   final TextEditingController? controller;
   final String? hintText;
   final String prefixIcon;
@@ -26,74 +27,88 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.baseWhite.withOpacity(0.05), // %5 beyaz ton
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: AppColors.baseWhite.withOpacity(0.20), // %20 beyaz border
-          width: 1,
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        keyboardType: keyboardType,
-        obscureText: isPassword && isPasswordVisible,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          color: AppColors.baseWhite,
-          fontWeight: FontWeight.w400,
-        ),
-
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(18),
-            borderSide: const BorderSide(
-              color: AppColors.primary, // %40 beyaz border
-              width: 1,
-            ),
-          ),
-          hintText: hintText,
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: AppColors.baseWhite.withOpacity(0.5),
-            fontWeight: FontWeight.w400,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 12),
-            child: ImageIcon(
-              AssetImage(prefixIcon),
-              color: AppColors.baseWhite,
-              size: 24,
-            ),
-          ),
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 48,
-            minHeight: 20,
-          ),
-          suffixIcon: suffixIcon != null
-              ? GestureDetector(
-                  onTap: onSuffixTap,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16, left: 12),
+    return FormField<String>(
+      validator: validator,
+      builder: (fieldState) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.baseWhite.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: AppColors.baseWhite.withOpacity(0.20),
+                  width: 1,
+                ),
+              ),
+              child: TextField(
+                controller: controller,
+                keyboardType: keyboardType,
+                obscureText: isPassword && isPasswordVisible,
+                onChanged: (value) {
+                  fieldState.didChange(value);
+                },
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: AppColors.baseWhite,
+                  fontWeight: FontWeight.w400,
+                ),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: hintText,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: AppColors.baseWhite.withOpacity(0.5),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 12),
                     child: ImageIcon(
-                      AssetImage(suffixIcon!),
-                      color: AppColors.baseWhite.withOpacity(0.3),
+                      AssetImage(prefixIcon),
+                      color: AppColors.baseWhite,
                       size: 24,
                     ),
                   ),
-                )
-              : null,
-          suffixIconConstraints: suffixIcon != null
-              ? const BoxConstraints(minWidth: 48, minHeight: 20)
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
-          ),
-          isDense: true,
-        ),
-      ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 20,
+                  ),
+                  suffixIcon: suffixIcon != null
+                      ? GestureDetector(
+                          onTap: onSuffixTap,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 16, left: 12),
+                            child: ImageIcon(
+                              AssetImage(suffixIcon!),
+                              color: AppColors.baseWhite.withOpacity(0.3),
+                              size: 24,
+                            ),
+                          ),
+                        )
+                      : null,
+                  suffixIconConstraints: suffixIcon != null
+                      ? const BoxConstraints(minWidth: 48, minHeight: 20)
+                      : null,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                ),
+              ),
+            ),
+            if (fieldState.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 4, left: 12),
+                child: Text(
+                  fieldState.errorText ?? '',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }
