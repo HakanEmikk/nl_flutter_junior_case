@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jr_case_boilerplate/features/home/providers/movie_provider.dart';
@@ -55,14 +56,21 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   scrollDirection: Axis.vertical,
                   controller: _pageController,
                   itemBuilder: (context, index) {
-                    return HomeMovieListItem(
-                      movie: movieState.movies[index],
-                      isActive: true,
-                      onFavoriteToggle: () {
-                        ref
-                            .read(movieProvider.notifier)
-                            .setFavoriteMovie(movieState.movies[index].id);
-                      },
+                    return FlipInY(
+                      duration: const Duration(milliseconds: 400),
+
+                      child: SlideInUp(
+                        duration: const Duration(milliseconds: 300),
+                        child: HomeMovieListItem(
+                          movie: movieState.movies[index],
+                          isActive: true,
+                          onFavoriteToggle: () {
+                            ref
+                                .read(movieProvider.notifier)
+                                .setFavoriteMovie(movieState.movies[index].id);
+                          },
+                        ),
+                      ),
                     );
                   },
                 ),
