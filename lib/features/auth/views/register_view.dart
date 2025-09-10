@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/core/helpers/snackbar_helper.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/register_ui_state_provider.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,9 +26,6 @@ class _RegisterViewState extends ConsumerState<RegisterView>
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
-  bool _acceptTerms = false;
 
   @override
   void initState() {
@@ -50,34 +49,19 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     final isLargeScreen = screenWidth > 600;
 
     final authState = ref.watch(authProvider);
+    final registerUIState = ref.watch(registerUIStateProvider);
 
     ref.listen(authProvider, (previous, next) {
-      // Sadece gerçekten state değiştiğinde çalış
-      if (previous?.isAuthenticated != next.isAuthenticated ||
+      if (previous?.isRegisterAuthenticated != next.isRegisterAuthenticated ||
           previous?.error != next.error) {
-        if (next.isAuthenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.registerSuccess),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 2),
-            ),
+        if (next.isRegisterAuthenticated) {
+          SnackbarHelper.success(
+            context,
+            AppLocalizations.of(context)!.registerSuccess,
           );
+          AppRoutes.pushNamed(context, AppRoutes.login);
         } else if (next.error != null && previous?.error != next.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(next.error!),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
-              ref.read(authProvider.notifier).clearError();
-            }
-          });
+          SnackbarHelper.error(context, next.error!);
         }
       }
     });
@@ -111,17 +95,17 @@ class _RegisterViewState extends ConsumerState<RegisterView>
                       SizedBox(height: screenHeight * 0.0168),
 
                       // Form alanları
-                      _buildFormFields(),
+                      _buildFormFields(registerUIState),
 
                       const SizedBox(height: 16),
 
                       // Sözleşme onay kutusu
-                      _buildTermsCheckbox(),
+                      _buildTermsCheckbox(registerUIState),
 
                       const SizedBox(height: 8),
 
                       // Kaydol butonu
-                      _buildRegisterButton(),
+                      _buildRegisterButton(authState, registerUIState),
 
                       SizedBox(height: screenHeight * 0.0084),
 
@@ -178,7 +162,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildFormFields() {
+  Widget _buildFormFields(RegisterUIState uiState) {
     return Column(
       children: [
         // Ad Soyad
@@ -225,14 +209,23 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           hintText: AppLocalizations.of(context)!.enterPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: _isPasswordVisible,
-          suffixIcon: _isPasswordVisible
+          isPasswordVisible: uiState.isPasswordVisible,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return AppLocalizations.of(context)!.passwordRequired;
+            }
+            if (value.length < 6) {
+              return AppLocalizations.of(context)!.passwordMinLength;
+            }
+            return null;
+          },
+          suffixIcon: uiState.isPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
-            setState(() {
-              _isPasswordVisible = !_isPasswordVisible;
-            });
+            ref
+                .read(registerUIStateProvider.notifier)
+                .togglePasswordVisibility();
           },
         ),
 
@@ -244,14 +237,14 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           hintText: AppLocalizations.of(context)!.enterConfirmPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: _isPasswordVisible,
-          suffixIcon: _isPasswordVisible
+          isPasswordVisible: uiState.isConfirmPasswordVisible,
+          suffixIcon: uiState.isConfirmPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
-            setState(() {
-              _isPasswordVisible = !_isPasswordVisible;
-            });
+            ref
+                .read(registerUIStateProvider.notifier)
+                .toggleConfirmPasswordVisibility();
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -267,22 +260,20 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildTermsCheckbox() {
+  Widget _buildTermsCheckbox(RegisterUIState uiState) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: () {
-            setState(() {
-              _acceptTerms = !_acceptTerms;
-            });
+            ref.read(registerUIStateProvider.notifier).toggleAcceptTerms();
           },
           child: Container(
             width: 24,
             height: 24,
             margin: const EdgeInsets.only(top: 2, right: 12),
             decoration: BoxDecoration(
-              color: _acceptTerms
+              color: uiState.acceptTerms
                   ? AppColors.primary
                   : AppColors.baseWhite.withOpacity(0.05),
               border: Border.all(
@@ -291,7 +282,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
               ),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: _acceptTerms
+            child: uiState.acceptTerms
                 ? const Icon(Icons.check, size: 16, color: AppColors.baseWhite)
                 : null,
           ),
@@ -329,21 +320,29 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(AuthState authState, RegisterUIState uiState) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: CustomPrimaryButton(
-        onPressed: () {
-          _handleRegister();
-        },
-        child: Text(
-          AppLocalizations.of(context)!.register,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: AppColors.baseWhite,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        onPressed: authState.isLoading ? null : () => _handleRegister(uiState),
+
+        child: authState.isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                AppLocalizations.of(context)!.register,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: AppColors.baseWhite,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
@@ -398,6 +397,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         ),
         TextButton(
           onPressed: () {
+            ref.read(registerUIStateProvider.notifier).reset();
             // Giriş sayfasına git
             AppRoutes.pushReplacementNamed(context, AppRoutes.login);
           },
@@ -413,22 +413,20 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  void _handleRegister() {
-    if (_formKey.currentState!.validate() && _acceptTerms) {
+  void _handleRegister(RegisterUIState uiState) {
+    if (!uiState.acceptTerms) {
+      SnackbarHelper.info(
+        context,
+        AppLocalizations.of(context)!.acceptTermsError,
+      );
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
       final name = _nameController.text.trim();
 
       ref.read(authProvider.notifier).register(email, password, name);
-    }
-    if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.acceptTermsError),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
     }
   }
 }

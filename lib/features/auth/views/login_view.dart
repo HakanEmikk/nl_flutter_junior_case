@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/core/helpers/snackbar_helper.dart';
 import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
 import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/ui_state_provider.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -22,7 +24,6 @@ class _LoginViewState extends ConsumerState<LoginView>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = true;
 
   late AnimationController _lottieController;
   late AnimationController _fadeController;
@@ -61,35 +62,19 @@ class _LoginViewState extends ConsumerState<LoginView>
     final isLargeScreen = screenWidth > 600;
 
     final authState = ref.watch(authProvider);
-
+    final uiState = ref.watch(uiStateProvider);
     ref.listen(authProvider, (previous, next) {
       // Sadece gerçekten state değiştiğinde çalış
       if (previous?.isAuthenticated != next.isAuthenticated ||
           previous?.error != next.error) {
         if (next.isAuthenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.loginSuccess),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 2),
-            ),
+          SnackbarHelper.success(
+            context,
+            AppLocalizations.of(context)!.loginSuccess,
           );
           AppRoutes.pushNamed(context, AppRoutes.navBar);
         } else if (next.error != null && previous?.error != next.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(next.error!),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
-              ref.read(authProvider.notifier).clearError();
-            }
-          });
+          SnackbarHelper.error(context, next.error!);
         }
       }
     });
@@ -127,7 +112,7 @@ class _LoginViewState extends ConsumerState<LoginView>
                       SizedBox(height: screenHeight * 0.0168),
 
                       // Form alanları
-                      _buildFormFields(),
+                      _buildFormFields(uiState),
 
                       const SizedBox(height: 16),
 
@@ -269,7 +254,7 @@ class _LoginViewState extends ConsumerState<LoginView>
     );
   }
 
-  Widget _buildFormFields() {
+  Widget _buildFormFields(UIState uiState) {
     return Column(
       children: [
         CustomTextFormField(
@@ -293,14 +278,12 @@ class _LoginViewState extends ConsumerState<LoginView>
           hintText: AppLocalizations.of(context)!.enterPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: _isPasswordVisible,
-          suffixIcon: _isPasswordVisible
+          isPasswordVisible: !uiState.isPasswordVisible,
+          suffixIcon: !uiState.isPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
-            setState(() {
-              _isPasswordVisible = !_isPasswordVisible;
-            });
+            ref.read(uiStateProvider.notifier).togglePasswordVisibility();
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
