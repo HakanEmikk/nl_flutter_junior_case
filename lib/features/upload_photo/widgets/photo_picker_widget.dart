@@ -84,11 +84,15 @@ class PhotoPickerWidget extends ConsumerWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(32),
                     ),
-                    child: Image.file(
-                      File(uploadPhotoState.image!.path),
-                      width: 176,
-                      height: 176,
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadiusGeometry.circular(32),
+                      child: Image.file(
+                        File(uploadPhotoState.image!.path),
+
+                        width: 176,
+                        height: 176,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
