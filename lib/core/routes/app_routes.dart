@@ -20,40 +20,45 @@ class AppRoutes {
     splash: (context) => const SplashView(),
   };
 
-  // Route generator (dinamik routes için)
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(
-          builder: (context) => const SplashView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const SplashView(), settings);
       case login:
-        return MaterialPageRoute(
-          builder: (context) => const LoginView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const LoginView(), settings);
       case register:
-        return MaterialPageRoute(
-          builder: (context) => const RegisterView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const RegisterView(), settings);
       case home:
-        return MaterialPageRoute(
-          builder: (context) => const HomeView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const HomeView(), settings);
       case navBar:
-        return MaterialPageRoute(
-          builder: (context) => const NavBarView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const NavBarView(), settings);
       case imageUpload:
-        return MaterialPageRoute(
-          builder: (context) => const UploadPhotoView(),
-          settings: settings,
-        );
+        return _buildPageRoute(const UploadPhotoView(), settings);
     }
+    return null;
+  }
+
+  static PageRouteBuilder _buildPageRoute(Widget page, RouteSettings settings) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      settings: settings,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0); // sağdan sola
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
+
+        return Transform(
+          transform: Matrix4.identity()..rotateY(1.0 - animation.value),
+          alignment: Alignment.center,
+          child: child,
+        );
+      },
+    );
   }
 
   // Navigasyon helper metodları
