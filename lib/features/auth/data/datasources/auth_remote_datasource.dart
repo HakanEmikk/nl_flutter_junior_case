@@ -64,7 +64,7 @@ class AuthRemoteDataSource {
         } else {
           switch (e.response!.statusCode) {
             case 400:
-              errorMessage = 'E-posta veya şifre hatalı';
+              errorMessage = 'Bu e-mail kullanılıyor';
               break;
             case 422:
               errorMessage = 'Geçersiz veri formatı';

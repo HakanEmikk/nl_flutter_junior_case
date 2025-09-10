@@ -9,18 +9,22 @@ class AuthState {
   final bool isLoading;
   final String? error;
   final bool isAuthenticated;
+  final bool isRegisterAuthenticated;
 
   const AuthState._({
     this.user,
     this.isLoading = false,
     this.error,
     this.isAuthenticated = false,
+    this.isRegisterAuthenticated = false,
   });
 
   const AuthState.initial() : this._();
   const AuthState.loading() : this._(isLoading: true);
   const AuthState.authenticated(UserModel user)
     : this._(user: user, isAuthenticated: true);
+  const AuthState.registerAuthenticated(UserModel user)
+    : this._(user: user, isRegisterAuthenticated: true);
   const AuthState.unauthenticated() : this._();
   const AuthState.error(String error) : this._(error: error);
 
@@ -29,12 +33,15 @@ class AuthState {
     bool? isLoading,
     String? error,
     bool? isAuthenticated,
+    bool? isRegisterAuthenticated,
   }) {
     return AuthState._(
       user: user ?? this.user,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
+      isRegisterAuthenticated:
+          isRegisterAuthenticated ?? this.isRegisterAuthenticated,
     );
   }
 }
@@ -47,9 +54,7 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
 
-  AuthNotifier(this._repository) : super(const AuthState.initial()) {
-    _checkAuthStatus();
-  }
+  AuthNotifier(this._repository) : super(const AuthState.initial());
 
   Future<void> _checkAuthStatus() async {
     try {
@@ -69,7 +74,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = await _repository.login(email, password);
       state = AuthState.authenticated(user);
     } catch (e) {
-      state = AuthState.error(e.toString());
+      if (e.toString().contains('Exception:')) {
+        state = AuthState.error(e.toString().replaceFirst('Exception:', ''));
+      }
     }
   }
 
@@ -78,9 +85,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     try {
       final user = await _repository.register(email, password, name);
-      state = AuthState.authenticated(user);
+      state = AuthState.registerAuthenticated(user);
     } catch (e) {
-      state = AuthState.error(e.toString());
+      if (e.toString().contains('Exception:')) {
+        state = AuthState.error(e.toString().replaceFirst('Exception:', ''));
+      }
     }
   }
 
