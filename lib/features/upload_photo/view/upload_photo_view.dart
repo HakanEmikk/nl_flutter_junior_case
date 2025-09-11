@@ -54,7 +54,10 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () {
+              Navigator.of(context).pop();
+              ref.read(uploadPhotoProvider.notifier).clearPhoto();
+            },
             child: Container(
               width: 44,
               height: 44,
@@ -99,6 +102,7 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
                       await ref
                           .read(uploadPhotoProvider.notifier)
                           .uploadPhoto(uploadPhotoState.image!);
+
                       Navigator.of(context).pop();
                     },
               bacgroundColor: uploadPhotoState.image == null
@@ -119,6 +123,7 @@ class _UploadPhotoViewState extends ConsumerState<UploadPhotoView> {
             height: 52,
             child: TextButton(
               onPressed: () {
+                ref.read(uploadPhotoProvider.notifier).clearPhoto();
                 Navigator.of(context).pop();
               },
               style: TextButton.styleFrom(
