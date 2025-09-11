@@ -49,4 +49,28 @@ class MovieModel {
       'Plot': plot,
     };
   }
+
+  MovieModel copyWith({
+    String? id,
+    String? title,
+    String? plot,
+    bool? isFavorite,
+    String? year,
+    String? poster,
+    String? genre,
+    String? imdbRating,
+    List<String>? Images,
+  }) {
+    return MovieModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      plot: plot ?? this.plot,
+      isFavorite: isFavorite ?? this.isFavorite,
+      year: year ?? this.year,
+      poster: poster ?? this.poster,
+      genre: genre ?? this.genre,
+      imdbRating: imdbRating ?? this.imdbRating,
+      Images: Images ?? this.Images,
+    );
+  }
 }

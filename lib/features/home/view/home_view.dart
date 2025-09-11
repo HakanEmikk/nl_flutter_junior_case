@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:jr_case_boilerplate/features/home/providers/expand_provider.dart';
 
 import 'package:jr_case_boilerplate/features/home/providers/movie_provider.dart';
 import 'package:jr_case_boilerplate/features/home/widgets/home_movie_list_item.dart';
@@ -56,6 +57,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   scrollDirection: Axis.vertical,
                   controller: _pageController,
                   itemBuilder: (context, index) {
+                    final isExpanded = ref.watch(
+                      expandProvider.select(
+                        (map) => map[movieState.movies[index].id] ?? false,
+                      ),
+                    );
                     return FlipInY(
                       duration: const Duration(milliseconds: 400),
 
@@ -64,6 +70,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         child: HomeMovieListItem(
                           movie: movieState.movies[index],
                           isActive: true,
+                          isExpanded: isExpanded,
+                          onExpandToggle: () {
+                            ref
+                                .read(expandProvider.notifier)
+                                .toggle(movieState.movies[index].id);
+                          },
                           onFavoriteToggle: () {
                             ref
                                 .read(movieProvider.notifier)

@@ -9,11 +9,14 @@ class HomeMovieListItem extends StatefulWidget {
     required this.movie,
     required this.isActive,
     required this.onFavoriteToggle,
+    required this.isExpanded,
+    required this.onExpandToggle,
   });
   final MovieModel movie;
   final bool isActive;
   final VoidCallback onFavoriteToggle;
-
+  final bool isExpanded;
+  final VoidCallback onExpandToggle;
   @override
   State<HomeMovieListItem> createState() => _HomeMovieListItemState();
 }
@@ -24,7 +27,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
   late AnimationController _favoriteAnimationController;
   late Animation<double> _contentAnimation;
   late Animation<double> _favoriteScaleAnimation;
-  bool isExpanded = false;
 
   @override
   void initState() {
@@ -77,9 +79,6 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
       _favoriteAnimationController.reverse();
     });
     widget.onFavoriteToggle();
-    setState(() {
-      widget.movie.isFavorite = !widget.movie.isFavorite!;
-    });
   }
 
   @override
@@ -196,21 +195,17 @@ class _HomeMovieListItemState extends State<HomeMovieListItem>
                                     ),
                                 child: Text(
                                   widget.movie.plot!,
-                                  maxLines: isExpanded ? null : 3,
+                                  maxLines: widget.isExpanded ? null : 3,
                                   overflow: TextOverflow.visible,
                                 ),
                               ),
                               if (widget.movie.plot!.length > 100)
                                 GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      isExpanded = !isExpanded;
-                                    });
-                                  },
+                                  onTap: widget.onExpandToggle,
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 4.0),
                                     child: Text(
-                                      isExpanded
+                                      widget.isExpanded
                                           ? AppLocalizations.of(
                                               context,
                                             )!.showLess

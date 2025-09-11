@@ -45,7 +45,16 @@ class MovieNotifier extends StateNotifier<MovieState> {
 
   Future<void> setFavoriteMovie(String id) async {
     try {
-      final Movies = await _repository.setFavoriteMovie(id);
+      await _repository.setFavoriteMovie(id);
+
+      final updatedMovies = state.movies.map((movie) {
+        if (movie.id == id) {
+          return movie.copyWith(isFavorite: !movie.isFavorite!);
+        }
+        return movie;
+      }).toList();
+
+      state = state.copyWith(movies: updatedMovies);
     } catch (e) {}
   }
 
