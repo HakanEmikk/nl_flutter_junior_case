@@ -1,3 +1,4 @@
+![Demo Video](videos/video.mp4)
 | | |
 |---|---|
 | <img src="https://github.com/user-attachments/assets/730782b3-576f-43e8-b4d8-634fa089eaa0" width="250"> | <img src="https://github.com/user-attachments/assets/ebbebeb4-5cd5-4716-90ac-80d752406a17" width="250"> |
