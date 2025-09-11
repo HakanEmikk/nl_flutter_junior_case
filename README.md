@@ -1,3 +1,5 @@
+> Not: Video büyük olduğu için GitHub üzerinde direkt oynatılamıyor.  
+> Raw olarak indirip izleyebilirsiniz.
 [Videoyu buradan izleyin](videos/video.mp4)
 | | |
 |---|---|
