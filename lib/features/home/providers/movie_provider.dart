@@ -56,7 +56,6 @@ class MovieNotifier extends StateNotifier<MovieState> {
     _isFetching = true;
     try {
       if (!loadMore) {
-        state = const MovieState.loading();
         _currentPage = 1;
       } else {
         state = MovieState.loadingMore(state.movies);

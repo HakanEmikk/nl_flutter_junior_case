@@ -12,8 +12,8 @@ void main() {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // her ekranda şeffaf
-      statusBarIconBrightness: Brightness.light, // ikonlar beyaz
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
     ),
   );
   runApp(const ProviderScope(child: MyApp()));
@@ -22,14 +22,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       navigatorObservers: [routeObserver],
       localeResolutionCallback: (locale, supportedLocales) {
-        // Telefonun dili destekleniyorsa onu kullan, yoksa Türkçe kullan
         if (locale != null) {
           for (var supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode) {

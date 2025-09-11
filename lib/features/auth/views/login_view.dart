@@ -4,8 +4,8 @@ import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
-import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
-import 'package:jr_case_boilerplate/features/auth/providers/ui_state_provider.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/login_provider.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/login_state.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -61,22 +61,26 @@ class _LoginViewState extends ConsumerState<LoginView>
     final isSmallScreen = screenWidth < 380;
     final isLargeScreen = screenWidth > 600;
 
-    final authState = ref.watch(authProvider);
-    final uiState = ref.watch(uiStateProvider);
+    final loginState = ref.watch(loginProvider);
 
-    ref.listen(authProvider, (previous, next) {
-      // Sadece gerçekten state değiştiğinde çalış
-      if (previous?.isAuthenticated != next.isAuthenticated ||
-          previous?.error != next.error) {
-        if (next.isAuthenticated) {
-          AppRoutes.pushNamed(context, AppRoutes.navBar);
-          SnackbarHelper.success(
-            context,
-            AppLocalizations.of(context)!.loginSuccess,
-          );
-        } else if (next.error != null && previous?.error != next.error) {
-          SnackbarHelper.error(context, next.error!);
-        }
+    ref.listen(loginProvider, (previous, next) {
+      if (next.isAuthenticated) {
+        SnackbarHelper.success(
+          context,
+          AppLocalizations.of(context)!.loginSuccess,
+        );
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            ref.read(loginProvider.notifier).clearLoginState();
+
+            AppRoutes.pushNamedAndRemoveUntil(context, AppRoutes.navBar);
+          }
+        });
+      } else if (next.error != null &&
+          previous != null &&
+          previous.error != next.error) {
+        SnackbarHelper.error(context, next.error!);
       }
     });
 
@@ -113,7 +117,7 @@ class _LoginViewState extends ConsumerState<LoginView>
                       SizedBox(height: screenHeight * 0.0168),
 
                       // Form alanları
-                      _buildFormFields(uiState),
+                      _buildFormFields(loginState),
 
                       const SizedBox(height: 16),
 
@@ -123,7 +127,7 @@ class _LoginViewState extends ConsumerState<LoginView>
                       const SizedBox(height: 8),
 
                       // Giriş yap butonu
-                      _buildLoginButton(authState),
+                      _buildLoginButton(loginState),
 
                       SizedBox(height: screenHeight * 0.02),
 
@@ -255,7 +259,7 @@ class _LoginViewState extends ConsumerState<LoginView>
     );
   }
 
-  Widget _buildFormFields(UIState uiState) {
+  Widget _buildFormFields(LoginState loginState) {
     return Column(
       children: [
         CustomTextFormField(
@@ -279,12 +283,12 @@ class _LoginViewState extends ConsumerState<LoginView>
           hintText: AppLocalizations.of(context)!.enterPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: !uiState.isPasswordVisible,
-          suffixIcon: !uiState.isPasswordVisible
+          isPasswordVisible: !loginState.isPasswordVisible,
+          suffixIcon: !loginState.isPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
-            ref.read(uiStateProvider.notifier).togglePasswordVisibility();
+            ref.read(loginProvider.notifier).togglePasswordVisibility();
           },
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -316,13 +320,13 @@ class _LoginViewState extends ConsumerState<LoginView>
     );
   }
 
-  Widget _buildLoginButton(AuthState authState) {
+  Widget _buildLoginButton(LoginState loginState) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: CustomPrimaryButton(
-        onPressed: authState.isLoading ? null : _handleLogin,
-        child: authState.isLoading
+        onPressed: loginState.isLoading ? null : _handleLogin,
+        child: loginState.isLoading
             ? const SizedBox(
                 height: 20,
                 width: 20,
@@ -392,6 +396,7 @@ class _LoginViewState extends ConsumerState<LoginView>
         ),
         TextButton(
           onPressed: () {
+            ref.read(loginProvider.notifier).resetUIState();
             AppRoutes.pushNamed(context, AppRoutes.register);
           },
           child: Text(
@@ -412,7 +417,7 @@ class _LoginViewState extends ConsumerState<LoginView>
       final password = _passwordController.text;
 
       // Auth provider ile login işlemi
-      ref.read(authProvider.notifier).login(email, password);
+      ref.read(loginProvider.notifier).login(email, password);
     }
   }
 }

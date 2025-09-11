@@ -4,8 +4,8 @@ import 'package:jr_case_boilerplate/core/routes/app_routes.dart';
 import 'package:jr_case_boilerplate/core/widgets/buttons/custom_primary_button.dart';
 import 'package:jr_case_boilerplate/core/widgets/text_form_field/custom_text_form_field.dart';
 import 'package:jr_case_boilerplate/core/widgets/view_background/Stack_gradient_background.dart';
-import 'package:jr_case_boilerplate/features/auth/providers/auth_providers.dart';
-import 'package:jr_case_boilerplate/features/auth/providers/register_ui_state_provider.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/register_provider.dart';
+import 'package:jr_case_boilerplate/features/auth/providers/register_state.dart';
 import 'package:jr_case_boilerplate/features/auth/widgets/social_media_button.dart';
 import 'package:jr_case_boilerplate/core/constants/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,21 +48,25 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     final isSmallScreen = screenWidth < 380;
     final isLargeScreen = screenWidth > 600;
 
-    final authState = ref.watch(authProvider);
-    final registerUIState = ref.watch(registerUIStateProvider);
+    final registerState = ref.watch(registerProvider);
 
-    ref.listen(authProvider, (previous, next) {
-      if (previous?.isRegisterAuthenticated != next.isRegisterAuthenticated ||
-          previous?.error != next.error) {
-        if (next.isRegisterAuthenticated) {
-          SnackbarHelper.success(
-            context,
-            AppLocalizations.of(context)!.registerSuccess,
-          );
-          AppRoutes.pushNamed(context, AppRoutes.login);
-        } else if (next.error != null && previous?.error != next.error) {
-          SnackbarHelper.error(context, next.error!);
-        }
+    ref.listen(registerProvider, (previous, next) {
+      if (next.isRegistered) {
+        SnackbarHelper.success(
+          context,
+          AppLocalizations.of(context)!.registerSuccess,
+        );
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            ref.read(registerProvider.notifier).clearRegisterState();
+
+            AppRoutes.pushNamedAndRemoveUntil(context, AppRoutes.login);
+          }
+        });
+      } else if (next.error != null &&
+          previous != null &&
+          previous.error != next.error) {
+        SnackbarHelper.error(context, next.error!);
       }
     });
     return Scaffold(
@@ -95,17 +99,17 @@ class _RegisterViewState extends ConsumerState<RegisterView>
                       SizedBox(height: screenHeight * 0.0168),
 
                       // Form alanları
-                      _buildFormFields(registerUIState),
+                      _buildFormFields(registerState),
 
                       const SizedBox(height: 16),
 
                       // Sözleşme onay kutusu
-                      _buildTermsCheckbox(registerUIState),
+                      _buildTermsCheckbox(registerState),
 
                       const SizedBox(height: 8),
 
                       // Kaydol butonu
-                      _buildRegisterButton(authState, registerUIState),
+                      _buildRegisterButton(registerState),
 
                       SizedBox(height: screenHeight * 0.0084),
 
@@ -162,7 +166,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildFormFields(RegisterUIState uiState) {
+  Widget _buildFormFields(RegisterState registerState) {
     return Column(
       children: [
         // Ad Soyad
@@ -209,7 +213,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           hintText: AppLocalizations.of(context)!.enterPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: uiState.isPasswordVisible,
+          isPasswordVisible: !registerState.isPasswordVisible,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return AppLocalizations.of(context)!.passwordRequired;
@@ -219,13 +223,11 @@ class _RegisterViewState extends ConsumerState<RegisterView>
             }
             return null;
           },
-          suffixIcon: !uiState.isPasswordVisible
+          suffixIcon: !registerState.isPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
-            ref
-                .read(registerUIStateProvider.notifier)
-                .togglePasswordVisibility();
+            ref.read(registerProvider.notifier).togglePasswordVisibility();
           },
         ),
 
@@ -237,13 +239,13 @@ class _RegisterViewState extends ConsumerState<RegisterView>
           hintText: AppLocalizations.of(context)!.enterConfirmPassword,
           prefixIcon: 'assets/images/Lock.png',
           isPassword: true,
-          isPasswordVisible: uiState.isConfirmPasswordVisible,
-          suffixIcon: !uiState.isConfirmPasswordVisible
+          isPasswordVisible: !registerState.isConfirmPasswordVisible,
+          suffixIcon: !registerState.isConfirmPasswordVisible
               ? 'assets/images/Hide.png'
               : 'assets/images/See.png',
           onSuffixTap: () {
             ref
-                .read(registerUIStateProvider.notifier)
+                .read(registerProvider.notifier)
                 .toggleConfirmPasswordVisibility();
           },
           validator: (value) {
@@ -260,20 +262,20 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildTermsCheckbox(RegisterUIState uiState) {
+  Widget _buildTermsCheckbox(RegisterState registerState) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: () {
-            ref.read(registerUIStateProvider.notifier).toggleAcceptTerms();
+            ref.read(registerProvider.notifier).toggleAcceptTerms();
           },
           child: Container(
             width: 24,
             height: 24,
             margin: const EdgeInsets.only(top: 2, right: 12),
             decoration: BoxDecoration(
-              color: uiState.acceptTerms
+              color: registerState.acceptTerms
                   ? AppColors.primary
                   : AppColors.baseWhite.withOpacity(0.05),
               border: Border.all(
@@ -282,7 +284,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
               ),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: uiState.acceptTerms
+            child: registerState.acceptTerms
                 ? const Icon(Icons.check, size: 16, color: AppColors.baseWhite)
                 : null,
           ),
@@ -320,14 +322,16 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  Widget _buildRegisterButton(AuthState authState, RegisterUIState uiState) {
+  Widget _buildRegisterButton(RegisterState registerState) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: CustomPrimaryButton(
-        onPressed: authState.isLoading ? null : () => _handleRegister(uiState),
+        onPressed: registerState.isLoading
+            ? null
+            : () => _handleRegister(registerState),
 
-        child: authState.isLoading
+        child: registerState.isLoading
             ? const SizedBox(
                 height: 20,
                 width: 20,
@@ -397,8 +401,8 @@ class _RegisterViewState extends ConsumerState<RegisterView>
         ),
         TextButton(
           onPressed: () {
-            ref.read(registerUIStateProvider.notifier).reset();
-            // Giriş sayfasına git
+            ref.read(registerProvider.notifier).resetUIState();
+
             AppRoutes.pushNamed(context, AppRoutes.login);
           },
           child: Text(
@@ -413,8 +417,8 @@ class _RegisterViewState extends ConsumerState<RegisterView>
     );
   }
 
-  void _handleRegister(RegisterUIState uiState) {
-    if (!uiState.acceptTerms) {
+  void _handleRegister(RegisterState registerState) {
+    if (!registerState.acceptTerms) {
       SnackbarHelper.info(
         context,
         AppLocalizations.of(context)!.acceptTermsError,
@@ -426,7 +430,7 @@ class _RegisterViewState extends ConsumerState<RegisterView>
       final password = _passwordController.text;
       final name = _nameController.text.trim();
 
-      ref.read(authProvider.notifier).register(email, password, name);
+      ref.read(registerProvider.notifier).register(email, password, name);
     }
   }
 }
