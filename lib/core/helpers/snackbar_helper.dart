@@ -37,7 +37,9 @@ class SnackbarHelper {
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium!.copyWith(color: AppColors.baseWhite),
                 ),
               ),
             ],
